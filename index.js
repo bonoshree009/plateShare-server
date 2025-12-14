@@ -31,7 +31,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     //api
      const database = client.db("plateshare");
       const foodscollection = database.collection("foods");
@@ -240,20 +240,7 @@ app.patch("/food-requests/:requestId", async (req, res) => {
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    await client.db("admin").command({ ping: 1 });
+   // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     
@@ -266,8 +253,9 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.listen(port, () => {
-  console.log(`My app listening on port ${port}`)
-})
+// app.listen(port, () => {
+//   console.log(`My app listening on port ${port}`)
+// })
 
 
+module.exports = app;
