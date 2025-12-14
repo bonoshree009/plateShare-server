@@ -100,3 +100,55 @@ async function run() {
 
     //single food api
 
+app.get("/foods/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const food = await foodscollection.findOne({ _id: new ObjectId(id) });
+    if (!food) return res.status(404).json({ message: "Food not found" });
+    res.json(food);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+   // my food api
+
+   app.post('/myfoods', async (req, res) => {
+  const food = req.body;
+  const result = await myfoodscollection.insertOne(food);
+  res.send(result);
+});
+
+
+app.get('/myfoods', async (req, res) => {
+  const email = req.query.email;
+  const result = await myfoodscollection
+    .find()
+    .toArray();
+
+  res.send(result);
+});
+
+//delete myfood
+
+const { ObjectId } = require("mongodb");
+
+app.delete('/myfoods/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).send({ error: "Invalid food ID" });
+    }
+
+    const result = await myfoodscollection.deleteOne({
+      _id: new ObjectId(id),
+    });
+
+    res.send(result);
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
