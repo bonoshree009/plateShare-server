@@ -160,4 +160,37 @@ app.get('/myfoods/:id', async (req, res) => {
   });
   res.send(result);
 });
+app.put('/myfoods/:id', async (req, res) => {
+  const id = req.params.id;
+  const updatedFood = req.body;
+
+  const result = await myfoodscollection.updateOne(
+    { _id: new ObjectId(id) },
+    {
+      $set: {
+        food_name: updatedFood.food_name,
+        quantity: updatedFood.quantity,
+        location: updatedFood.location,
+        expire_date: updatedFood.expire_date,
+        notes: updatedFood.notes,
+      },
+    }
+  );
+
+  res.send(result);
+});
+
+
+
+//food request
+
+app.post("/food-requests", async (req, res) => {
+  try {
+    const request = req.body; // { userEmail, name, photoURL, foodId, location, reason, contact, status: 'pending' }
+    const result = await foodRequestsCollection.insertOne(request);
+    res.status(201).send(result);
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
 
