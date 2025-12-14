@@ -151,4 +151,13 @@ app.delete('/myfoods/:id', async (req, res) => {
     res.status(500).send({ error: error.message });
   }
 });
+//update my food
+
+app.get('/myfoods/:id', async (req, res) => {
+  const id = req.params.id;
+  const result = await myfoodscollection.findOne({
+    _id: new ObjectId(id),
+  });
+  res.send(result);
+});
 
