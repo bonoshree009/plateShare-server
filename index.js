@@ -194,3 +194,80 @@ app.post("/food-requests", async (req, res) => {
   }
 });
 
+
+
+
+
+// 2. Get requests for a specific food (Food Owner only)
+app.get("/food-requests/:foodId", async (req, res) => {
+  try {
+    const foodId = req.params.foodId;
+    const requests = await foodRequestsCollection
+      .find({ foodId: foodId })
+      .toArray();
+    res.send(requests);
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
+// 3. Update request status (Accept / Reject)
+app.patch("/food-requests/:requestId", async (req, res) => {
+  try {
+    const { status } = req.body; // accepted / rejected
+    const requestId = req.params.requestId;
+
+    const request = await foodRequestsCollection.findOne({ _id: new ObjectId(requestId) });
+    if (!request) return res.status(404).send({ message: "Request not found" });
+
+    await foodRequestsCollection.updateOne(
+      { _id: new ObjectId(requestId) },
+      { $set: { status } }
+    );
+
+    // If accepted, update the food status to "donated"
+    if (status === "accepted") {
+      await foodscollection.updateOne(
+        { _id: new ObjectId(request.foodId) },
+        { $set: { food_status: "donated" } }
+      );
+    }
+
+    res.send({ message: "Request updated successfully" });
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } finally {
+    
+  }
+}
+run().catch(console.dir);
+
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`My app listening on port ${port}`)
+})
+
+
